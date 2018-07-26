@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>W2UI Demo</title>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="js/w2ui-1.5.rc1.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/w2ui-1.5.rc1.css">
+    
+</head>
+<body>
+<div class="container">
+    <div id="grid" style="width: 100%; height: 400px;"></div>
+</div>
+<script type="text/javascript">
+$(function () {
+    var url = window.location.href;
+    var data=(url.split("/").pop());
+
+    //Petición ajax para obtener las columnas 
+    $.ajax({
+        //Dirección de la API para consultar las columnas y searches
+        url: "http://localhost:3000/etiquetas",
+        type: 'GET',
+        dataType: 'json',
+        data: {data:data},
+        success: function (response) {
+            //Llamada a función mostrar, para visualizar las etiquetas y las columnas en las cuales se buscará en el plugin
+            mostrar(response.etiquetas, response.searches);
+        },
+        error: function (xhr, status) {
+            // handle errors
+        }
+    });
+
+    function mostrar(columns, searches){    
+        $('#grid').w2grid({
+            //nombre del grid 
+            name: 'grid', 
+            //opciones del grid a mostrar
+            show: { 
+                toolbar: true,
+                footer: true,
+                toolbarReload   : false,
+                skipRecords     : true,
+                toolbarExport   : true
+            },
+            //indicar si realiza búsquedas en múltiples campos
+            multiSearch: true,
+            //Dirección de la API para consultar los registros
+            url: "http://localhost:3000/records/",
+            method: 'GET',
+            //Parametro columns para mostrar las columnas
+            columns: columns,
+            //Parametro searches para mostrar las columnas en las cuales se realizarán búsquedas               
+            searches: searches   
+        });
+    }        
+});
+</script>
+
+</body>
+</html>
